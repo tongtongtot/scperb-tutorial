@@ -2,9 +2,9 @@
 
 Inspired by the transfer learning paradigm, we presented ScPerb, a generative model that can learn the "content" $Z_c^{ctrl}$ and $Z_c^{stim}$ of the cell types from both the control and stimulus datasets, and transfer the style $Z_s^{ctrl}$  from the control dataset to the stimulus dataset $Z_s^{stim}$. 
 
-In the inference stage, given a specific cell type from the control dataset $X^{ctrl}$, ScPerb will extract the cell type-related features $Z_c^{ctrl}$, and get the generated the pseudo-stimulus cell type $\hat{X}^{stim}$ based on $Z_c^{ctrl}$ and $\delta_s$, a result of a neuro-network, learning the difference beteween $Z_s^{ctrl}$ and $Z_s^{stim}$ . 
+In the inference stage, given a specific cell type from the control dataset $X^{ctrl}$, ScPerb will extract the cell type-related features $Z_c^{ctrl}$, and get the generated the pseudo-stimulus cell type $\hat{X}^{stim}$ based on $Z_c^{ctrl}$ and $\delta_s$, a result of a neuro-network, learning the difference between $Z_s^{ctrl}$ and $Z_s^{stim}$ . 
 
-We implement ScPerb with the variational auto-encoder (VAE), with a content encoder $E_\theta^c(.) $ for cell-type awareness features and a style encoder $E_\phi^s(.)$ for the dataset transformation, and a decoder  $D_\Phi(.)$   to generate the stimulated data from the latent variables.
+We implement ScPerb with the variational auto-encoder (VAE), with a content encoder $E_\theta^c(.) $ for cell-type awareness features and a style encoder $E_\phi^s(.)$ for the dataset transformation, and a decoder  $D_\Phi(.)$   to generate the stimulus data from the latent variables.
 
 1. Encoders
 
