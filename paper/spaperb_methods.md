@@ -1,95 +1,55 @@
-# ScPerb
+# scPerb
 
-Inspired by the transfer learning paradigm, we presented ScPerb, a generative model that can learn the "content" $Z_c^{ctrl}$ and $Z_c^{stim}$ of the cell types from both the control and stimulus datasets, and transfer the style $Z_s^{ctrl}$  from the control dataset to the stimulus dataset $Z_s^{stim}$. 
+Inspired by the transfer learning paradigm, we presented scPerb, a generative model that can learn the "content" $Z_c^{ctrl}$ and $Z_c^{stim}$ of the cell types from both the control and stimulus datasets, where $c$ represented the "content features" of the cell types, and transfer the style $Z_s^{ctrl}$  from the control dataset to the stimulation dataset $Z_s^{stim}$ , where $s$ represented the "dataset styles".
 
-In the inference stage, given a specific cell type from the control dataset $X^{ctrl}$, ScPerb will extract the cell type-related features $Z_c^{ctrl}$, and get the generated the pseudo-stimulus cell type $\hat{X}^{stim}$ based on $Z_c^{ctrl}$ and $\delta_s$, a result of a neuro-network, learning the difference between $Z_s^{ctrl}$ and $Z_s^{stim}$ . 
+scPerb is inspired by Varational Auto-Encoder (VAE) and the style-transfer GAN (stGAN). We used the variational inference to estimate the distribution $\mu$ and $\sigma$ of the "content features" $c$ in the latent space, and  project style input vector $r$ into the latent space and learn the transformation $s$ from the control dataset $X^{ctrl}$ to the stimulation dataset $X^{stim}$.  For the rest of the descriptions, we denote $E_\theta^c(.) $ as a content encoder to learn the cell-type awareness features, $E_\phi^s(.)$ to project the random-style input vectors to the latent space, $E_\mu^{c}(.)$ and $E_{\sigma}^{c}(.)$ represented to the $\mu$ and $\sigma$ estimation for the distribution of $c$, and $D_\Phi(.)$ for the decoder to generate the stimulation data from the latent variables $c$ and $s$. 
 
-We implement ScPerb with the variational auto-encoder (VAE), with a content encoder $E_\theta^c(.) $ for cell-type awareness features and a style encoder $E_\phi^s(.)$ for the dataset transformation, and a decoder  $D_\Phi(.)$   to generate the stimulus data from the latent variables.
+In the inference stage, given a specific cell type from the control dataset $X^{ctrl}$, scPerb will extract the cell type-related features $Z_c^{ctrl}$, and get the generated the pseudo-stimulus cell type $\hat{X}^{stim}$ based on $Z_c^{ctrl}$ and $\delta_s$, a result of a neuro-network, learning the difference between $Z_s^{ctrl}$ and $Z_s^{stim}$ . 
 
-1. Encoders
+1. #### Encoders
 
-We assumed the observations $X^{ctrl}$ and $X^{stim}$ from the control and stimulus datasets had two independent latent features: a cell type-related latent feature, denoted as  "content" $c$ , and a dataset-specific feature, denoted as "style" $s$. To extract the common cell type content feature, we applied a shared weight  encoder $E_\theta^c(.)$ to extract the features:
+We assumed the observations $X^{ctrl}$ and $X^{stim}$ from the control and stimulation datasets had two independent latent features: a cell type-related latent feature, denoted as  "content" $c$ , and a dataset-specific feature, denoted as "style" $s$. To extract the common cell type content feature, we first project the inputs into the latent space, then estimate the $\mu,\sigma$ to represent the normal distribution of $c$, and resample the latent variable $Z$ based on the generated distribution:
 $$
-Z^{ctrl}_c = E_\theta^c(X^{ctrl})
-$$
-$$
-Z^{stim}_c = E_\theta^c(X^{stim})
-$$
-
-In this manuscript, our task is to generate the pseudo-stimulus cell types from the same cell types in the control dataset. Therefore, instead of learning the dataset styles explicitly, we applied a light-wise network to learn the transformation $\delta_s$ in the latent space. Our idea was inspired by the style transfer learnings \cite[StyleGAN], where randomly sampled a noise $r$ and project the latent space as the styles. In ScPerb, we applied a style encoder $E_\phi^s(.)$, which can project the $r$ into the latent space as the transformation variable to convert $Z^{ctrl}_c$ to $Z^{stim}_c$:
-$$
-\delta _s = E^s_ \phi(r)
+\mu = E_\mu^{c}(E_\theta^c(X^{ctrl}))
 $$
 
 $$
-\hat{Z}_c^{stim} = Z_c^{ctrl} + \delta _s
+\sigma = E_\sigma^{c}(E_\theta^c(X^{ctrl}))
 $$
 
-
-
-2. Decoder
-
-We applied a decoder to generate the observations from the latent variables $\hat{Z}_c^{stim}$. Accordingly, the generatedion samples were denoted as: 
 $$
-\begin{gather}
-\hat{X}^{stim} = D_\Phi(\hat{Z}_c^{stim})\\
-\end{gather}
-$$
-Note that our task was to perturb the cell types from the control dataset to the stimulus dataset, and therefore we didn't generate the samples from $Z_c^{stim}$ and $Z_c^{ctrl}$. 
-
-
-
-3. Variational Inference 
-
-Based on our assumption, we have:
-$$
-P(x) = \int p(x|c; \theta)p(c) dc
-$$
-In the implementation, we assume $p(c)$ follows the standard Gaussian distribution $p(c)\sim N(0, I)$ , and a linear transformation between $Z_c^{ctrl}$ and $Z_c^{stim}$ in the latent space. Therefore, we have:
-$$
-P(x) = \int p(x | c; \theta) p(c) dc
-$$
-We use the Bayesian formula to calculate the posterior distribution $p(c|x)$ and  used the variational inference to maximize the ELBO with the Kullback-Leibler divergence:
-$$
-\begin{gather}
-&KL(q_\theta(c|x) || p(c|x)) \\&= KL(q_\theta(c|x)||p(c)) \\&- E_{c\sim q_\theta(c|x)}[ln P(x|c)] + ln p(x)
-\end{gather}
-$$
- Where we can have 
-$$
-\begin{gather}
-&ELBO = E_{c\sim q_\theta(c|x)}[ln P(x|c)]\\ &- KL(q_\theta(c|x) || p(c|x))\\ &\leq ln(p(x)) - KL(q_\theta(c|x)||p(c))
-\end{gather}
-$$
-In our implementation, we used a linear layer to generate the $mu$ and another linear layer to generate the $variance$:
-$$
-\begin{gather}
-& \mu = f_\Theta^{\mu}(z_c^{ctrl}) \\
-& \sigma = f_\Theta^{\sigma}(z_c^{ctrl}) \\
-\end{gather}
+Z_c^{ctrl} \sim N(\mu, \sigma)
 $$
 
-
-4. Loss function
-
-The objective functions will be combined with the reconstruction loss and the KL regulation terms. Additionally, we optimized the parameters in the style encoder by giving a constraint in the latent space:
+We shared the projection weights between the two dataset $X^{ctrl}$ and $X^{stim}$ , and therefore we can have the latent representation of $Z_c^{stim}$ as:
 $$
-Recon Loss = SmoothL1loss(x^{stim}, D_\Phi(Z_c^{ctrl} + \delta_s)
+\mu = E_\mu^{c}(E_\theta^c(X^{stim}))
 $$
+
+$$
+\sigma = E_\sigma^{c}(E_\theta^c(X^{stim}))
+$$
+
+$$
+Z_c^{stim} \sim N(\mu, \sigma)
+$$
+
+In this manuscript, our task is to generate the pseudo-stimulus cell types from the same cell types in the control dataset. Therefore, instead of learning the dataset styles explicitly, we applied a light-wise network to learn the transformation $s$ in the latent space. Our idea was inspired by the style transfer learnings \cite[StyleGAN], where randomly sampled a noise $r$ and project the latent space as the styles. In ScPerb, we applied a style encoder $E_\phi^s(.)$, which can project the $r$ into the latent space as the transformation variable to convert $Z^{ctrl}_c$ to $Z^{stim}_c$:
+$$
+s = E^s_ \phi(r)
+$$
+
+$$
+\hat{Z}_c^{stim} = Z_c^{ctrl} + s
+$$
+
+And therefore we have the following style loss and the KL regulations:
+$$
+Style Loss = SmoothL1Loss(Z_c^{stim}, Z_c^{ctrl} + s)
+$$
+
 $$
 KL Loss = KL(N(\mu, \sigma), N(0, I))
-\begin{gather}
-& \mu = f_\Theta^{\mu}(z_c^{ctrl}) \\
-& \sigma = f_\Theta^{\sigma}(z_c^{ctrl}) \\
-\end{gather}
-$$
-
-$$
-Style Loss = SmoothL1Loss(Z_c^{stim}, Z_c^{ctrl} + \delta_s)
-$$
-
-$$
-Loss = w_1 * ReconLoss + w_2 * KLLoss + w_3 * StyleLoss
 $$
 
 Where SmoothL1Loss and KL divergence are:
@@ -108,6 +68,27 @@ $$
 
 
 
+2. #### Decoder
+
+We applied a decoder to generate the observations from the latent variables $\hat{Z}_c^{stim}$. Accordingly, the generated samples were denoted as: 
+$$
+\begin{gather}
+\hat{X}^{stim} = D_\Phi(\hat{Z}_c^{stim})\\
+\end{gather}
+$$
+Note that our task was to perturb the cell types from the control dataset to the stimulus dataset, instead of generating the samples from $Z_c^{stim}$ and $Z_c^{ctrl}$, we use $\hat{Z}_c^{stim}$. Therefore, our Generated Loss is:
+$$
+GenLoss = SmoothL1loss(x^{stim}, D_\Phi(Z_c^{ctrl} + \delta_s)
+$$
+
+3. #### Loss function
+
+The objective functions will be combined with the Generated loss, Style Loss, and the KL regulation terms. 
+$$
+Loss = w_1 StyleLoss + w_2 KLLoss + w_3 GenLoss
+$$
+
+
 # Datasets and preprocess
 
 Mohammad et al. [\cite{scgen}] included three groups of control and stimulated cells: two groups of PBMC cells, and a group of HPOLY cells. Mohammad et al. preprocessed the data by removing megakaryocytic cells, filtering the cells with a minimum of 500 expressing cells, extracting the top 6998 cells, and log-transforming the original data. All the data are available on https://github.com/theislab/scgen-reproducibility.
@@ -118,7 +99,7 @@ In our model, we performed further data preprocessing to ensure consistency betw
 
 #  Statistics and Reproduction
 
-In ScPerb, we evaluated the performance of our model under a fixed seed of 42 by using the square of the $r_-value$, which is calculated by the $scipy.stats.linregress$ function. This metric measures the correlation between the generated images and the ground truth data. We computed the $r_-square$ values for both the mean and variance of all genes and the top 100 Differentially Expressed Genes (DEGs).
+In ScPerb, we evaluated the performance of our model under a fixed seed of 42 by using the square of the $r_-value$, which is calculated by the $scipy.stats.linregress$ function. This metric measures the correlation between the generated images and the ground truth data. We computed the $r_-square$ values for all genes' mean and variance and the top 100 Differentially Expressed Genes (DEGs).
 
 To understand the model’s results visually, we created scatter plots comparing the generated images to the corresponding ground truth data. This graph allowed us to observe how well the model's predictions aligned with the actual values.
 
