@@ -57,7 +57,8 @@ class Utils():
         diff_genes = top_100_genes
         stim = self.adata2numpy(adata[adata.obs[condition_key] == axis_keys["y"]])
         ctrl = self.adata2numpy(adata[adata.obs[condition_key] == axis_keys["x"]])
-        
+        print(stim)
+        print(ctrl)
         if diff_genes is not None:
             if hasattr(diff_genes, "tolist"):
                 diff_genes = diff_genes.tolist()

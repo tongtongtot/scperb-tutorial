@@ -64,7 +64,8 @@ def reg_plot(
         diff_genes = top_100_genes
         stim = adata2numpy(adata[adata.obs[condition_key] == axis_keys["y"]])
         ctrl = adata2numpy(adata[adata.obs[condition_key] == axis_keys["x"]])
-        
+        print(adata[adata.obs[condition_key] == axis_keys["y"]])
+        print(adata[adata.obs[condition_key] == axis_keys["x"]])
         if diff_genes is not None:
             if hasattr(diff_genes, "tolist"):
                 diff_genes = diff_genes.tolist()
@@ -85,8 +86,8 @@ def reg_plot(
             if verbose:
                 print("Top 100 DEGs var: ", r_value_diff**2)
         
-        if "y1" in axis_keys.keys():
-            real_stim = adata[adata.obs[condition_key] == axis_keys["y1"]]
+        # if "y1" in axis_keys.keys():
+        #     real_stim = adata[adata.obs[condition_key] == axis_keys["y1"]]
         
         if type == 'variance':
             x = np.asarray(np.var(ctrl, axis=0)).ravel()
@@ -101,41 +102,42 @@ def reg_plot(
             print("All genes var: ", r_value**2)
         
         df = pd.DataFrame({axis_keys["x"]: x, axis_keys["y"]: y})
+        print(df)
         ax = sns.regplot(x=axis_keys["x"], y=axis_keys["y"], data=df, ax = axs)
         ax.tick_params(labelsize=fontsize)
         
-        if "range" in kwargs:
-            start, stop, step = kwargs.get("range")
-            ax.set_xticks(np.arange(start, stop, step))
-            ax.set_yticks(np.arange(start, stop, step))
+        # if "range" in kwargs:
+        #     start, stop, step = kwargs.get("range")
+        #     ax.set_xticks(np.arange(start, stop, step))
+        #     ax.set_yticks(np.arange(start, stop, step))
         
         ax.set_xlabel(labels["x"], fontsize=fontsize)
         ax.set_ylabel(labels["y"], fontsize=fontsize)
         
-        if "y1" in axis_keys.keys():
-            if type == 'variance':
-                y1 = np.asarray(np.var(adata2numpy(real_stim), axis=0)).ravel()
-            else:
-                y1 = np.asarray(np.mean(adata2numpy(real_stim), axis=0)).ravel()
-            ax.scatter(
-                x,
-                y1,
-                marker="*",
-                c="grey",
-                alpha=0.5,
-                label=f"{axis_keys['x']}-{axis_keys['y1']}",
-            )
+        # if "y1" in axis_keys.keys():
+        #     if type == 'variance':
+        #         y1 = np.asarray(np.var(adata2numpy(real_stim), axis=0)).ravel()
+        #     else:
+        #         y1 = np.asarray(np.mean(adata2numpy(real_stim), axis=0)).ravel()
+        #     ax.scatter(
+        #         x,
+        #         y1,
+        #         marker="*",
+        #         c="grey",
+        #         alpha=0.5,
+        #         label=f"{axis_keys['x']}-{axis_keys['y1']}",
+        #     )
         
-        if gene_list is not None:
-            for i in gene_list:
-                j = adata.var_names.tolist().index(i)
-                x_bar = x[j]
-                y_bar = y[j]
-                ax.text(x_bar, y_bar, i, fontsize=11, color="black")
-                ax.plot(x_bar, y_bar, "o", color="red", markersize=5)
-                if "y1" in axis_keys.keys():
-                    y1_bar = y1[j]
-                    ax.text(x_bar, y1_bar, "*", color="black", alpha=0.5)
+        # if gene_list is not None:
+        #     for i in gene_list:
+        #         j = adata.var_names.tolist().index(i)
+        #         x_bar = x[j]
+        #         y_bar = y[j]
+        #         ax.text(x_bar, y_bar, i, fontsize=11, color="black")
+        #         ax.plot(x_bar, y_bar, "o", color="red", markersize=5)
+        #         if "y1" in axis_keys.keys():
+        #             y1_bar = y1[j]
+        #             ax.text(x_bar, y1_bar, "*", color="black", alpha=0.5)
         
         if legend:
             ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
@@ -327,7 +329,9 @@ def fix_seed(opt):
 
 def plot_graph(opt):
     model = spaperb(opt)
-    model.load(opt.model_save_path + '/'  + opt.exclude_celltype + '_best_epoch.pt')
+    # print(opt.model_save_path)
+    # model.load(opt.model_save_path + '/'  + opt.exclude_celltype + '_best_epoch.pt')
+    model.load("./supervise_2enc_spaperb_saved_one_loss/hpoly/model_Tuft" + '/'  + opt.exclude_celltype + '_best_epoch.pt')
     opt.plot = True
     validation(opt, model)
 

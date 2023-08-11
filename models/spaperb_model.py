@@ -94,7 +94,7 @@ class spaperb(nn.Module):
         # loss = (0.5 * (rl_con + rl_sti) + 0.5 * ((kld_con + kld_sti) * self.opt.alpha) + rl_sty)
             # print("not used")
         # else:
-        loss = rl + 0.5 * kld_con * self.opt.alpha + rl_sty
+        loss = rl + 0.5 * (kld_con) * self.opt.alpha + rl_sty
             # print("use")
         
         self.loss = loss * 100

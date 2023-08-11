@@ -71,7 +71,7 @@ class options():
 
     def get_opt(self):
         parser = argparse.ArgumentParser()
-        parser.add_argument("--model_name", type=str, default="baseline", help="The name of the current model.")
+        parser.add_argument("--model_name", type=str, default="2enc_spaperb_saved_one_loss", help="The name of the current model.")
         parser.add_argument("--training", type=bool, default=True, help="Whether training or not.")
         parser.add_argument("--resume", type=bool, default=False)
         parser.add_argument("--data", type=str, default='pbmc', help='Which data to use.')
@@ -119,12 +119,12 @@ class options():
 
         parser.add_argument('--seed', type=int, default=42)
         parser.add_argument("--use_model", type=str, default='all', help="Wheter to use the best model to predict or not.")
-        parser.add_argument("--model_use", type=str, default='2enc_spaperb', help="Wheter to use the best model to predict or not.")
+        parser.add_argument("--model_use", type=str, default='2enc_spaperb_saved_one_loss', help="Wheter to use the best model to predict or not.")
         parser.add_argument("--download_data", type=bool, default=False, help="Whether to download data or not.")
         parser.add_argument("--validation", type=bool, default=False, help="Whether this is validation or not.")
 
         parser.add_argument("--supervise", type = bool, default = False, help = "Whether to put in stimulus or not.")
         # parser.add_argument("--model")
-
+        # supervise_2enc_spaperb_saved_one_loss
         self.opt = parser.parse_args()
         return self.opt
