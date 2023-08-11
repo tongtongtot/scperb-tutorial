@@ -1,0 +1,18 @@
+TY  - JOUR
+AU  - Lotfollahi, Mohammad
+AU  - Wolf, F. Alexander
+AU  - Theis, Fabian J.
+PY  - 2019
+DA  - 2019/08/01
+TI  - scGen predicts single-cell perturbation responses
+JO  - Nature Methods
+SP  - 715
+EP  - 721
+VL  - 16
+IS  - 8
+AB  - Accurately modeling cellular response to perturbations is a central goal of computational biology. While such modeling has been based on statistical, mechanistic and machine learning models in specific settings, no generalization of predictions to phenomena absent from training data (out-of-sample) has yet been demonstrated. Here, we present scGen (https://github.com/theislab/scgen), a model combining variational autoencoders and latent space vector arithmetics for high-dimensional single-cell gene expression data. We show that scGen accurately models perturbation and infection response of cells across cell types, studies and species. In particular, we demonstrate that scGen learns cell-type and species-specific responses implying that it captures features that distinguish responding from non-responding genes and cells. With the upcoming availability of large-scale atlases of organs in a healthy state, we envision scGen to become a tool for experimental design through in silico screening of perturbation response in the context of disease and drug treatment.
+SN  - 1548-7105
+UR  - https://doi.org/10.1038/s41592-019-0494-8
+DO  - 10.1038/s41592-019-0494-8
+ID  - Lotfollahi2019
+ER  - 

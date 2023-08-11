@@ -1,0 +1,12 @@
+%0 Journal Article
+%A Arsham Ghahramani
+%A Fiona M. Watt
+%A Nicholas M. Luscombe
+%T Generative adversarial networks uncover epidermal regulators and predict single cell perturbations
+%D 2018
+%R 10.1101/262501
+%J bioRxiv
+%P 262501
+%X Recent advances have enabled gene expression profiling of single cells at lower cost. As more data is produced there is an increasing need to integrate diverse datasets and better analyse underutilised data to gain biological insights. However, analysis of single cell RNA-seq data is challenging due to biological and technical noise which not only varies between laboratories but also between batches. Here for the first time, we apply a new generative deep learning approach called Generative Adversarial Networks (GAN) to biological data. We show that it is possible to integrate diverse skin (epidermal) datasets and in doing so, our generative model is able to simulate realistic scRNA-seq data that covers the full diversity of cell types. In contrast to many machine-learning approaches, we are able to interpret internal parameters in a biologically meaningful manner. These include using internal GAN learned features for improved dimensionality reduction. Using our generative model we are able to obtain a universal representation of epidermal differentiation and use this to predict the effect of cell state perturbations on gene expression at high time-resolution. We show that our trained neural networks identify biological state-determining genes and through analysis of these networks we can obtain inferred gene regulatory relationships. In combination these attributes provide a powerful framework to progress the analysis of scRNA-seq data beyond exploratory analysis of cell clusters and towards integration of multiple datasets regardless of origin.
+%U https://www.biorxiv.org/content/biorxiv/early/2018/02/08/262501.full.pdf
+
