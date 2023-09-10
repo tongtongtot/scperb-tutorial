@@ -9,10 +9,10 @@ import scanpy as sc
 import matplotlib.pyplot as plt
 from utils.utils import Utils
 from options.option import options
-from models.spaperb_model import spaperb
+from models.scperb_model import scperb
 # from dataloader.testDataset import test_dataset
 from scipy import sparse
-from dataloader.spaperbDataset import customDataloader
+from dataloader.scperbDataset import customDataloader
 import pandas as pd
 import seaborn as sns
 
@@ -328,10 +328,10 @@ def fix_seed(opt):
     np.random.seed(opt.seed)
 
 def plot_graph(opt):
-    model = spaperb(opt)
+    model = scperb(opt)
     # print(opt.model_save_path)
     # model.load(opt.model_save_path + '/'  + opt.exclude_celltype + '_best_epoch.pt')
-    model.load("./supervise_2enc_spaperb_saved_one_loss/hpoly/model_Tuft" + '/'  + opt.exclude_celltype + '_best_epoch.pt')
+    model.load("./supervise_2enc_scperb_saved_one_loss/hpoly/model_Tuft" + '/'  + opt.exclude_celltype + '_best_epoch.pt')
     opt.plot = True
     validation(opt, model)
 
