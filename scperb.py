@@ -288,7 +288,7 @@ def validation(opt, model):
 def train_model(opt, dataset):
     utils = Utils(opt)
 
-    model = spaperb(opt)
+    model = scperb(opt)
     
     if opt.resume == True:
         model.load(opt.model_save_path + '/'  + opt.exclude_celltype + '_now_epoch.pt')

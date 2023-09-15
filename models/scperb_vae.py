@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 
-class scperb_vae(nn.Module):
+class scPerb_vae(nn.Module):
     def __init__(self, opt):
         super().__init__()
         self.opt = opt

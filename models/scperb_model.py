@@ -5,7 +5,7 @@ import numpy as np
 from torch import nn
 from scipy import stats
 from scipy import sparse
-from scperb_vae import scperb_vae
+from .scperb_vae import scPerb_vae
 from torch.distributions import Normal
 from torch.distributions import kl_divergence as kl
 
@@ -16,7 +16,7 @@ class scperb(nn.Module):
         self.criterion = nn.MSELoss(reduction = 'mean')
         self.l1_loss = nn.L1Loss()
         self.Sl1_loss = nn.SmoothL1Loss()
-        self.model = scperb_vae(opt).to(opt.device)
+        self.model = scPerb_vae(opt).to(opt.device)
         self.optimizer = torch.optim.AdamW(self.model.parameters(), opt.lr)
         self.loss_stat = {}
 
