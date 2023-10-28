@@ -123,7 +123,7 @@ class options():
         parser.add_argument("--download_data", type=bool, default=False, help="Whether to download data or not.")
         parser.add_argument("--validation", type=bool, default=False, help="Whether this is validation or not.")
 
-        parser.add_argument("--supervise", type = bool, default = False, help = "Whether to put in stimulus or not.")
+        parser.add_argument("--supervise", type = bool, default = True, help = "Whether to put in stimulus or not.")
         # parser.add_argument("--model")
         # supervise_2enc_spaperb_saved_one_loss
         self.opt = parser.parse_args()
