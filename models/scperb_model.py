@@ -97,7 +97,7 @@ class scperb(nn.Module):
         loss = rl + 0.5 * (kld_con) * self.opt.alpha + rl_sty
             # print("use")
         
-        self.loss = loss * 100
+        self.loss = loss
         # self.loss2 = rl_sty.mean()
 
         self.loss_stat = {
